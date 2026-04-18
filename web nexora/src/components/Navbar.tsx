@@ -1,8 +1,11 @@
+import { useAuth } from "../context/AuthContext";
 import { motion } from "motion/react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
 export function Navbar() {
+  const { user, logout, isAuthenticated } = useAuth();
+
   return (
     <motion.nav 
       initial={{ y: -100 }}
@@ -43,15 +46,35 @@ export function Navbar() {
       </div>
 
       <div className="flex items-center gap-4">
-        <Link
-          to="/login"
-          className="hidden sm:inline-flex rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/10"
-        >
-          Login
-        </Link>
-        <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 border-none">
-          Get Started
-        </Button>
+        {isAuthenticated ? (
+          <div className="flex items-center gap-4">
+            <div className="flex flex-col items-end hidden sm:flex">
+              <span className="text-sm font-medium text-white">{user?.name}</span>
+              <span className="text-[10px] text-muted-foreground">{user?.email}</span>
+            </div>
+            <Button 
+              onClick={() => logout()}
+              variant="outline"
+              className="rounded-full border-white/10 bg-white/5 text-sm font-medium text-white hover:bg-white/10"
+            >
+              Logout
+            </Button>
+          </div>
+        ) : (
+          <>
+            <Link
+              to="/login"
+              className="hidden sm:inline-flex rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/10"
+            >
+              Login
+            </Link>
+            <Link to="/signup">
+              <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 border-none">
+                Get Started
+              </Button>
+            </Link>
+          </>
+        )}
       </div>
     </motion.nav>
   );

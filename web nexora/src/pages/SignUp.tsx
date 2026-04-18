@@ -13,6 +13,8 @@ export default function SignUp() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState<{ name?: string; email?: string; password?: string; confirmPassword?: string; general?: string }>({});
   const [isLoading, setIsLoading] = useState(false);
+  const [isOtpSent, setIsOtpSent] = useState(false);
+  const [otp, setOtp] = useState("");
   const navigate = useNavigate();
 
   const validate = () => {
@@ -54,15 +56,40 @@ export default function SignUp() {
     setErrors({});
 
     try {
-      await fetchApi("/auth/register", {
+      const result = await fetchApi<{ message: string }>("/auth/register", {
         method: "POST",
         body: JSON.stringify({ name, email, password }),
       });
       
-      // On success, go to login so they can log in via the standard flow
-      navigate("/login");
+      setIsOtpSent(true);
+      // For development, we might show the OTP message
+      console.log(result.message);
     } catch (err: any) {
       setErrors({ general: err.message || "An error occurred during signup." });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleVerifyOtp = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!otp || otp.length !== 6) {
+      setErrors({ general: "Please enter a valid 6-digit OTP." });
+      return;
+    }
+
+    setIsLoading(true);
+    setErrors({});
+
+    try {
+      await fetchApi("/auth/verify-otp", {
+        method: "POST",
+        body: JSON.stringify({ email, otp }),
+      });
+      
+      navigate("/login");
+    } catch (err: any) {
+      setErrors({ general: err.message || "Invalid OTP" });
     } finally {
       setIsLoading(false);
     }
@@ -82,85 +109,134 @@ export default function SignUp() {
           <h1 className="text-4xl font-semibold tracking-tight">Create Account</h1>
         </div>
 
-        <form className="space-y-6" onSubmit={handleSubmit} noValidate>
-          <div className="space-y-2">
-            <label htmlFor="name" className="block text-sm font-medium text-gray-300">
-              Full Name
-            </label>
-            <input
-              id="name"
-              name="name"
-              type="text"
-              value={name}
-              onChange={(event) => setName(event.target.value)}
-              placeholder="Enter your full name"
-              className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-slate-500 outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20"
-            />
-            {errors.name ? <p className="text-sm text-pink-400">{errors.name}</p> : null}
-          </div>
-
-          <div className="space-y-2">
-            <label htmlFor="email" className="block text-sm font-medium text-gray-300">
-              Email
-            </label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              placeholder="Enter your email"
-              className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-slate-500 outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20"
-            />
-            {errors.email ? <p className="text-sm text-pink-400">{errors.email}</p> : null}
-          </div>
-
-          <div className="space-y-2">
-            <label htmlFor="password" className="block text-sm font-medium text-gray-300">
-              Password
-            </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              placeholder="Create a password"
-              className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-slate-500 outline-none transition focus:border-purple-400 focus:ring-2 focus:ring-purple-500/20"
-            />
-            {errors.password ? <p className="text-sm text-pink-400">{errors.password}</p> : null}
-          </div>
-
-          <div className="space-y-2">
-            <label htmlFor="confirm-password" className="block text-sm font-medium text-gray-300">
-              Confirm Password
-            </label>
-            <input
-              id="confirm-password"
-              name="confirmPassword"
-              type="password"
-              value={confirmPassword}
-              onChange={(event) => setConfirmPassword(event.target.value)}
-              placeholder="Re-enter your password"
-              className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-slate-500 outline-none transition focus:border-purple-400 focus:ring-2 focus:ring-purple-500/20"
-            />
-            {errors.confirmPassword ? <p className="text-sm text-pink-400">{errors.confirmPassword}</p> : null}
-          </div>
-
-          {errors.general && (
-            <div className="rounded-xl bg-red-500/10 border border-red-500/20 p-3">
-              <p className="text-sm text-red-500 text-center">{errors.general}</p>
+        {!isOtpSent ? (
+          <form className="space-y-6" onSubmit={handleSubmit} noValidate>
+            <div className="space-y-2">
+              <label htmlFor="name" className="block text-sm font-medium text-gray-300">
+                Full Name
+              </label>
+              <input
+                id="name"
+                name="name"
+                type="text"
+                value={name}
+                onChange={(event) => setName(event.target.value)}
+                placeholder="Enter your full name"
+                className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-slate-500 outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20"
+              />
+              {errors.name ? <p className="text-sm text-pink-400">{errors.name}</p> : null}
             </div>
-          )}
 
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full rounded-2xl bg-gradient-to-r from-purple-600 to-blue-500 px-5 py-3 text-base font-semibold text-white shadow-lg shadow-purple-500/20 transition hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isLoading ? "Creating Account..." : "Sign Up"}
-          </button>
-        </form>
+            <div className="space-y-2">
+              <label htmlFor="email" className="block text-sm font-medium text-gray-300">
+                Email
+              </label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                placeholder="Enter your email"
+                className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-slate-500 outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20"
+              />
+              {errors.email ? <p className="text-sm text-pink-400">{errors.email}</p> : null}
+            </div>
+
+            <div className="space-y-2">
+              <label htmlFor="password" className="block text-sm font-medium text-gray-300">
+                Password
+              </label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                placeholder="Create a password"
+                className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-slate-500 outline-none transition focus:border-purple-400 focus:ring-2 focus:ring-purple-500/20"
+              />
+              {errors.password ? <p className="text-sm text-pink-400">{errors.password}</p> : null}
+            </div>
+
+            <div className="space-y-2">
+              <label htmlFor="confirm-password" className="block text-sm font-medium text-gray-300">
+                Confirm Password
+              </label>
+              <input
+                id="confirm-password"
+                name="confirmPassword"
+                type="password"
+                value={confirmPassword}
+                onChange={(event) => setConfirmPassword(event.target.value)}
+                placeholder="Re-enter your password"
+                className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-slate-500 outline-none transition focus:border-purple-400 focus:ring-2 focus:ring-purple-500/20"
+              />
+              {errors.confirmPassword ? <p className="text-sm text-pink-400">{errors.confirmPassword}</p> : null}
+            </div>
+
+            {errors.general && (
+              <div className="rounded-xl bg-red-500/10 border border-red-500/20 p-3">
+                <p className="text-sm text-red-500 text-center">{errors.general}</p>
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full rounded-2xl bg-gradient-to-r from-purple-600 to-blue-500 px-5 py-3 text-base font-semibold text-white shadow-lg shadow-purple-500/20 transition hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isLoading ? "Creating Account..." : "Sign Up"}
+            </button>
+          </form>
+        ) : (
+          <form className="space-y-6" onSubmit={handleVerifyOtp} noValidate>
+            <div className="text-center space-y-2 mb-6">
+              <p className="text-sm text-gray-400">
+                We've sent a 6-digit verification code to <br />
+                <span className="text-white font-medium">{email}</span>
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <label htmlFor="otp" className="block text-sm font-medium text-gray-300">
+                Verification Code
+              </label>
+              <input
+                id="otp"
+                name="otp"
+                type="text"
+                maxLength={6}
+                value={otp}
+                onChange={(event) => setOtp(event.target.value)}
+                placeholder="Enter 6-digit OTP"
+                className="w-full text-center tracking-[0.5em] rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-2xl text-white placeholder:text-slate-500 outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20"
+              />
+            </div>
+
+            {errors.general && (
+              <div className="rounded-xl bg-red-500/10 border border-red-500/20 p-3">
+                <p className="text-sm text-red-500 text-center">{errors.general}</p>
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full rounded-2xl bg-gradient-to-r from-purple-600 to-blue-500 px-5 py-3 text-base font-semibold text-white shadow-lg shadow-purple-500/20 transition hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isLoading ? "Verifying..." : "Verify & Complete"}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setIsOtpSent(false)}
+              className="w-full text-sm text-slate-400 hover:text-white transition"
+            >
+              Back to Sign Up
+            </button>
+          </form>
+        )}
 
         <Link
           to="/login"

@@ -3,16 +3,19 @@
 Based on the massive Stripe/Linear-tier visual overhaul, here is the modernized 3D architecture driving the **Nexora** platform:
 
 ## 1. Project Structure Overview
-Nexora has been structurally bifurcated. The application now runs a hybrid architecture where the standard DOM React Tree is seamlessly backed by an ultra-lightweight WebGL Canvas layer executing completely off the main thread.
+Nexora has been structurally bifurcated. The application runs a hybrid architecture where the standard DOM React Tree is seamlessly backed by an ultra-lightweight WebGL Canvas layer executing completely off the main thread.
 
 ``` text
 Root/src
 ├── pages/
 │   ├── Home (Standard Landing Array)
 │   ├── Services (Heavy Parallax Service Engine)
+│   ├── Pricing (Tiered Strategic Models)
+│   ├── Contact (Active Engagement Channel)
 │   ├── Login / SignUp
 ├── components/
 │   ├── 3d/ (0-Allocation WebGL Space)
+│   │   ├── Scene.tsx (Central Environment Orchestrator)
 │   │   ├── CyberGrid.tsx (Drifting BufferGeometry)
 │   │   ├── ParticleField.tsx (Organic Swarm Matrix)
 │   │   └── AIOrb.tsx (MeshDistort Core)
@@ -20,38 +23,48 @@ Root/src
 │   │   ├── FeatureCard3D.tsx (±14° standard parallax)
 │   │   ├── ServiceCard3D.tsx (±9° heavy hierarchy parallax)
 │   │   └── [shadcn defaults]
-│   ├── Layout Shells
-│   │   ├── Features.tsx, About.tsx, Hero.tsx 
-│   │   └── (Contains Masked <Canvas> integrations and Asymmetric Typography)
+│   ├── AIDemo.tsx (Interactive Signal Analysis)
+│   ├── DashboardPreview.tsx (Intelligence Command Center)
+│   ├── AIMovingLines.tsx (Canvas-based Neural Pathing)
+│   ├── WelcomeScreen.tsx (Initial Entry Sequence)
+│   └── Layout Shells (Hero, Features, About, Footer, etc.)
+├── lib/
+│   ├── gemini.ts (Google Gemini AI Integration)
+└── context/
+    ├── AuthContext.tsx (Global Session Management)
 ```
 
 ## 2. Technology Stack & Core Engines
 - **Frontend Framework:** React 19 + TypeScript + Vite 6
-- **3D Context Layer:** `@react-three/fiber`, `three`
-- **Physics Layer:** `motion/react` (Framer Motion values/springs decoupled from State Render)
-- **Styling Architecture:** Tailwind CSS, Glassmorphic variables, strict CSS composite masks (`WebkitMaskComposite: 'xor'`).
+- **AI Engine:** Google Gemini Pro (`@google/genai`) for real-time strategic insights.
+- **3D Context Layer:** `@react-three/fiber`, `three`, `@react-three/drei`
+- **Physics Layer:** `motion/react` (Framer Motion v12 value/springs decoupled from State Render)
+- **Data Visualization:** `recharts` (Hardware-accelerated SVG/Canvas charting)
+- **Styling Architecture:** Tailwind CSS v4, Glassmorphic variables, strict CSS composite masks.
 - **Typography Tokens:** `DM Sans` (Structural body), `DM Mono` (Data-nodes / Stats)
 
 ## 3. High-Performance WebGL Pipeline
 We enforce exceptionally strict memory allocation tracking across the 3D ecosystem to guarantee sub-millisecond frame rendering:
 
 ### The WebGL Rulebook (`src/components/3d/`)
+- **Scene Orchestration:** `Scene.tsx` handles lighting (`Environment`), global `ambientLight`, and component instantiation with `Float` wrappers for organic movement.
 - All `<Canvas>` implementations run strictly with `powerPreference: "low-power"`, `antialias: false`, and `alpha: true`.
-- **Zero-Allocation Frame Loops:** The 60fps `useFrame` logic strictly manipulates raw indexing across `Float32Array` buffers (initiated perfectly via `useMemo()`). 
-- `.map`, `.forEach`, array spreads `[...]`, and object instantiations `{}` are outright banned inside the frame bounds to dodge Javascript Garbage Collection stutter.
-- Background canvases are merged into the black void utilizing `.maskImage: radial-gradient/ellipse` trickery to prevent hard layout cutoffs.
+- **Zero-Allocation Frame Loops:** The 60fps `useFrame` logic strictly manipulates raw indexing across `Float32Array` buffers.
+- `.map`, `.forEach`, array spreads `[...]`, and object instantiations `{}` are banned inside frame bounds to eliminate Garbage Collection stutter.
 
 ### The Spatial UI Engine (`src/components/ui/`)
-Our cards and horizontal banners natively render inside 3D Perspective CSS boxes.
-- `FeatureCard3D` and `ServiceCard3D` calculate localized Pythagorean distances entirely using `useMotionValue` and `useTransform` logic. They track exactly where your cursor exists within normalized `[-1, 1]` ranges and react accordingly. 
-- **Array Depth (`translateZ`)**: Items inside arrays calculate explicit Z-indices based on array index positioning (e.g. `10px -> 15px -> 20px`), tearing themselves off the background.
-- Glare tracking, `.feTurbulence` topological noise, and strict XOR `.WebkitMask` clipping ensures intense glow borders process purely via the GPU layer. 
+- `FeatureCard3D` and `ServiceCard3D` calculate localized Pythagorean distances entirely using `useMotionValue` and `useTransform`.
+- **Z-Space Interaction:** Items calculate explicit Z-indices based on array index positioning (e.g. `10px -> 15px -> 20px`), tearing themselves off the background.
+- Glare tracking and strict XOR `.WebkitMask` clipping ensures glow borders process purely via the GPU.
 
-## 4. Layout & Typographic Choreography
-The structural scaffolding supporting our 3D components follows a heavily controlled "Stripe/Linear" aesthetic pattern:
-- **Asymmetric Typography:** Titles are broken into word-by-word cascades utilizing staggered `motion.span` arrays. Accent words natively trigger complex 3-stop gradient backgrounds utilizing `WebkitBackgroundClip`.
-- **Monospaced Data Anchors:** Standard paragraphs are heavily supplemented by `//` code-comment statistics styled via `DM Mono` rendering raw system specifications for a hyper-modern edge.
-- **Dual Ambient Light Leaks:** Broad `#04070f` voids are punctuated exclusively by absolute-positioned `<divs>` bluring at `120px` generating Indigo, Cyan, Emerald, and Fuchsia light-leaks mapping perfectly behind the 3D components context.
+## 4. Intelligent Components & Data Visualization
+- **AI Signal Analysis:** `AIDemo` connects to the `gemini-3-flash-preview` model via a dedicated server-side utility in `src/lib/gemini.ts`.
+- **Command Center:** `DashboardPreview` utilizes `recharts` with custom gradient fills and glassmorphic overlays to visualize high-velocity business data.
+- **Canvas Interaction:** `AIMovingLines` provides a lightweight interactive background layer using raw Canvas 2D API for neural-network-like visuals.
 
-## 5. Build Mechanics
-Vite natively packages the standard tree structure alongside the heavy raw mathematics libraries, producing `.js` chunk payloads cleanly optimized for modern browsers through automated compression algorithms and HMR tracking.
+## 5. Layout & Typographic Choreography
+- **Asymmetric Typography:** Titles use staggered `motion.span` arrays. Accent words trigger 3-stop gradient backgrounds via `WebkitBackgroundClip`.
+- **Dual Ambient Light Leaks:** Broad `#04070f` voids are punctuated by absolute-positioned divs with `120px` blur generating multi-spectral light-leaks.
+
+## 6. Build Mechanics
+Vite 6 packages the standard tree alongside heavy raw mathematics libraries, producing optimized `.js` chunk payloads with native HMR tracking and automated compression.
