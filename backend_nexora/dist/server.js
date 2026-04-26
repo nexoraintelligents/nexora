@@ -20,23 +20,38 @@ const authLimiter = (0, express_rate_limit_1.default)({
     standardHeaders: true,
     legacyHeaders: false,
 });
-// Connect to MongoDB
-(0, mongoose_1.connectDB)();
-app.use((0, cors_1.default)());
-app.use(express_1.default.json());
-// Routes
-app.use('/api/v1/auth', authLimiter, auth_routes_1.default);
-app.get('/health', (_, res) => {
-    res.status(200).send('OK');
-});
-// Example firebase protected route
-app.get('/api/protected-firebase', firebaseGuard_1.firebaseGuard, (req, res) => {
-    res.json({ message: 'This is a firebase protected route' });
-});
-// New JWT protected route
-app.get('/api/protected', auth_1.authGuard, (req, res) => {
-    res.json({ message: 'This is a JWT protected route', user: req.user });
-});
-app.listen(port, () => {
-    console.log(`Server running on ${port}`);
-});
+async function startServer() {
+    try {
+        // Connect to MongoDB
+        await (0, mongoose_1.connectDB)();
+        app.use((0, cors_1.default)({
+            origin: true,
+            credentials: true,
+            methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+            allowedHeaders: ['Content-Type', 'Authorization']
+        }));
+        app.use(express_1.default.json());
+        // Health endpoint
+        app.get('/health', (_, res) => {
+            res.status(200).send('OK');
+        });
+        // Routes
+        app.use('/api/v1/auth', authLimiter, auth_routes_1.default);
+        // Example firebase protected route
+        app.get('/api/protected-firebase', firebaseGuard_1.firebaseGuard, (req, res) => {
+            res.json({ message: 'This is a firebase protected route' });
+        });
+        // New JWT protected route
+        app.get('/api/protected', auth_1.authGuard, (req, res) => {
+            res.json({ message: 'This is a JWT protected route', user: req.user });
+        });
+        app.listen(port, () => {
+            console.log(`Server running on ${port}`);
+        });
+    }
+    catch (error) {
+        console.error('SERVER_STARTUP_ERROR:', error);
+        process.exit(1);
+    }
+}
+startServer();

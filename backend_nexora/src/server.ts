@@ -18,29 +18,44 @@ const authLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-// Connect to MongoDB
-connectDB();
+async function startServer() {
+  try {
+    // Connect to MongoDB
+    await connectDB();
 
-app.use(cors());
-app.use(express.json());
+    app.use(cors({
+      origin: true,
+      credentials: true,
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization']
+    }));
+    app.use(express.json());
 
-// Routes
-app.use('/api/v1/auth', authLimiter, authRoutes);
+    // Health endpoint
+    app.get('/health', (_, res) => {
+      res.status(200).send('OK');
+    });
 
-app.get('/health', (_, res) => {
-  res.status(200).send('OK');
-});
+    // Routes
+    app.use('/api/v1/auth', authLimiter, authRoutes);
 
-// Example firebase protected route
-app.get('/api/protected-firebase', firebaseGuard, (req, res) => {
-  res.json({ message: 'This is a firebase protected route' });
-});
+    // Example firebase protected route
+    app.get('/api/protected-firebase', firebaseGuard, (req, res) => {
+      res.json({ message: 'This is a firebase protected route' });
+    });
 
-// New JWT protected route
-app.get('/api/protected', authGuard, (req, res) => {
-  res.json({ message: 'This is a JWT protected route', user: (req as any).user });
-});
+    // New JWT protected route
+    app.get('/api/protected', authGuard, (req, res) => {
+      res.json({ message: 'This is a JWT protected route', user: (req as any).user });
+    });
 
-app.listen(port, () => {
-  console.log(`Server running on ${port}`);
-});
+    app.listen(port, () => {
+      console.log(`Server running on ${port}`);
+    });
+  } catch (error) {
+    console.error('SERVER_STARTUP_ERROR:', error);
+    process.exit(1);
+  }
+}
+
+startServer();
