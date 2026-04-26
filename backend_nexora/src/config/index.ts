@@ -8,4 +8,6 @@ export const config = {
   jwtSecret: process.env.JWT_SECRET || 'secret',
   emailUser: process.env.EMAIL_USER,
   emailPass: process.env.EMAIL_PASS,
+  razorpayKeyId: process.env.RAZORPAY_KEY_ID,
+  razorpayKeySecret: process.env.RAZORPAY_KEY_SECRET,
 };

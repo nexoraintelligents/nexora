@@ -12,46 +12,36 @@ interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (userData: User) => void;
-  logout: () => Promise<void>;
+  login: (userData: User, token: string) => void;
+  logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  // Check current session on mount (useful if HTTP-only cookies maintain the backend auth state)
-  // Our backend uses short-lived tokens in memory + refresh token HttpOnly cookie.
-  // Actually, we need an endpoint to "get current user" via the cookie. Let's assume `/auth/me`. 
-  // If no backend endpoint exists, we will rely purely on manual login tracking for this demo.
-  useEffect(() => {
-    async function checkAuth() {
+  const [user, setUser] = useState<User | null>(() => {
+    const storedUser = localStorage.getItem("user");
+    const storedToken = localStorage.getItem("token");
+    if (storedUser && storedToken) {
       try {
-        // Attempt to fetch user profile using secure session
-        const data = await fetchApi<{ user: User }>("/users/me");
-        setUser(data.user);
-      } catch (error) {
-        // Not authenticated
-        setUser(null);
-      } finally {
-        setIsLoading(false);
+        return JSON.parse(storedUser);
+      } catch (e) {
+        return null;
       }
     }
-    checkAuth();
-  }, []);
+    return null;
+  });
+  const [isLoading, setIsLoading] = useState(false);
 
-  const login = (userData: User) => {
+  const login = (userData: User, token: string) => {
+    localStorage.setItem("user", JSON.stringify(userData));
+    localStorage.setItem("token", token);
     setUser(userData);
   };
 
-  const logout = async () => {
-    try {
-      await fetchApi("/auth/logout", { method: "POST" });
-    } catch (e) {
-      console.error("Logout failed:", e);
-    }
+  const logout = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
     setUser(null);
     window.location.href = "/";
   };

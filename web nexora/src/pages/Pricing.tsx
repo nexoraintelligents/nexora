@@ -1,6 +1,11 @@
 import { motion } from "motion/react";
 import { Check, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { fetchApi } from "../lib/api";
+import { toast } from "sonner";
+import { Sparkles } from "lucide-react";
 
 const tiers = [
   {
@@ -30,6 +35,75 @@ const tiers = [
 ];
 
 export default function Pricing() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const handlePayment = async (tier: typeof tiers[0]) => {
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+
+    if (tier.price === "Custom") {
+      // Assuming contact sales or similar for Enterprise
+      window.location.href = "mailto:sales@nexora.example.com";
+      return;
+    }
+
+    try {
+      const amount = parseInt(tier.price.replace("$", ""));
+      const order = await fetchApi<any>("/payments/create-order", {
+        method: "POST",
+        body: JSON.stringify({ amount, planName: tier.name }),
+      });
+
+      const options = {
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+        amount: order.amount,
+        currency: order.currency,
+        name: "Nexora",
+        description: `Subscription for ${tier.name} plan`,
+        order_id: order.id,
+        handler: async (response: any) => {
+          try {
+            await fetchApi("/payments/verify-payment", {
+              method: "POST",
+              body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+              }),
+            });
+            
+            toast.success("Payment Successful!", {
+              description: `Welcome to the ${tier.name} plan. Your intelligence journey begins now!`,
+              duration: 5000,
+              icon: <Sparkles className="w-5 h-5 text-purple-400" />,
+            });
+          } catch (err: any) {
+            toast.error("Payment Verification Failed", {
+              description: err.message,
+            });
+          }
+        },
+        prefill: {
+          name: (user as any).name || '',
+          email: (user as any).email || '',
+        },
+        theme: {
+          color: "#7c3aed",
+        },
+      };
+
+      const rzp = new (window as any).Razorpay(options);
+      rzp.open();
+    } catch (err: any) {
+      toast.error("Process Failed", {
+        description: err.message,
+      });
+    }
+  };
+
   return (
     <div className="pt-32 pb-20 min-h-screen relative overflow-hidden">
       {/* Background Decor */}
@@ -99,6 +173,7 @@ export default function Pricing() {
               </ul>
               
               <Button 
+                onClick={() => handlePayment(tier)}
                 className={`w-full h-12 rounded-xl text-md transition-all ${
                   tier.popular 
                     ? "bg-gradient-to-r from-purple-600 to-cyan-600 hover:shadow-[0_0_20px_rgba(168,85,247,0.4)] border-none text-white" 

@@ -11,10 +11,12 @@ import Pricing from "./pages/Pricing";
 import Contact from "./pages/Contact";
 import { AuthProvider } from "./context/AuthContext";
 import { WelcomeScreen } from "./components/WelcomeScreen";
+import { Toaster } from "sonner";
 
 export default function App() {
   return (
     <AuthProvider>
+      <Toaster position="top-center" richColors theme="dark" />
       <Router>
         <WelcomeScreen />
         <div className="min-h-screen bg-background text-foreground selection:bg-purple-500/30">
