@@ -14,8 +14,10 @@ export async function fetchApi<T>(endpoint: string, options: RequestInit = {}): 
     headers.set("Content-Type", "application/json");
   }
 
-  // The proxy in vite automatically forwards `/api` to `localhost:4000/api`
-  const url = endpoint.startsWith("/api") ? endpoint : `/api/v1${endpoint}`;
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
+  const url = endpoint.startsWith("/api") 
+    ? `${BASE_URL}${endpoint}` 
+    : `${BASE_URL}/api/v1${endpoint}`;
 
   const response = await fetch(url, { ...options, headers });
 
