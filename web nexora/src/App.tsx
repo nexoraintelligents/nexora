@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import { Navbar } from "./components/Navbar";
 import { Footer } from "./components/Footer";
 import Home from "./pages/Home";
@@ -9,39 +9,90 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import Pricing from "./pages/Pricing";
 import Contact from "./pages/Contact";
-import { AuthProvider } from "./context/AuthContext";
+import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
+import Admin from "./pages/Admin";
+import AdminLogin from "./pages/AdminLogin";
+import { AuthProvider, useAuth } from "./context/AuthContext";
 import { WelcomeScreen } from "./components/WelcomeScreen";
+import { ThemeProvider } from "./components/ThemeProvider";
+import { CommandPalette } from "./components/CommandPalette";
 import { Toaster } from "sonner";
+import { Navigate } from "react-router-dom";
+
+/* Protected Route Wrapper for Admin Area */
+function ProtectedAdminRoute({ children }: { children: React.ReactNode }) {
+  const { user, isAuthenticated, isLoading } = useAuth();
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center text-foreground">
+        Loading restricted access...
+      </div>
+    );
+  }
+
+  if (!isAuthenticated || user?.role !== "admin") {
+    return <Navigate to="/admin/login" replace />;
+  }
+
+  return <>{children}</>;
+}
+
+/* Hide Navbar + Footer on admin routes */
+function Layout() {
+  const { pathname } = useLocation();
+  const isAdmin = pathname.startsWith("/admin");
+
+  return (
+    <div className="min-h-screen bg-background text-foreground selection:bg-purple-500/30">
+      {!isAdmin && <Navbar />}
+      <main>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/services" element={<Services />} />
+          <Route path="/pricing" element={<Pricing />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/:id" element={<BlogPost />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin" element={
+            <ProtectedAdminRoute><Admin /></ProtectedAdminRoute>
+          } />
+          <Route path="/admin/*" element={
+            <ProtectedAdminRoute><Admin /></ProtectedAdminRoute>
+          } />
+        </Routes>
+      </main>
+      {!isAdmin && <Footer />}
+
+      {/* Global Background Glow Elements */}
+      {!isAdmin && (
+        <div className="fixed inset-0 pointer-events-none -z-20 overflow-hidden">
+          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-500/5 dark:bg-purple-900/10 blur-[120px] rounded-full" />
+          <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-500/5 dark:bg-blue-900/10 blur-[120px] rounded-full" />
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function App() {
   return (
-    <AuthProvider>
-      <Toaster position="top-center" richColors theme="dark" />
-      <Router>
-        <WelcomeScreen />
-        <div className="min-h-screen bg-background text-foreground selection:bg-purple-500/30">
-        <Navbar />
-        <main>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/services" element={<Services />} />
-            <Route path="/pricing" element={<Pricing />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
-          </Routes>
-        </main>
-        <Footer />
-        
-        {/* Global Background Elements */}
-        <div className="fixed inset-0 pointer-events-none -z-20 overflow-hidden">
-          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-900/10 blur-[120px] rounded-full" />
-          <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-900/10 blur-[120px] rounded-full" />
-        </div>
-      </div>
-      </Router>
-    </AuthProvider>
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <AuthProvider>
+        {/* Other developer's Toaster notification system */}
+        <Toaster position="top-center" richColors theme="dark" />
+        <Router>
+          <CommandPalette />
+          <WelcomeScreen />
+          <Layout />
+        </Router>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }

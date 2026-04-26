@@ -49,12 +49,12 @@ export function FAQ() {
           {faqs.map((item) => {
             const Icon = item.icon;
             return (
-              <Card key={item.question} className="bg-slate-950/80 border border-white/10 shadow-[0_20px_60px_rgba(15,23,42,0.35)]">
+              <Card key={item.question} className="bg-white/80 dark:bg-slate-950/80 border border-black/10 dark:border-white/10 shadow-lg dark:shadow-[0_20px_60px_rgba(15,23,42,0.35)]">
                 <CardHeader className="gap-4 px-6 pt-6">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-3xl bg-purple-500/10 text-purple-300">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-3xl bg-purple-500/10 text-purple-600 dark:text-purple-300">
                     <Icon className="h-5 w-5" />
                   </div>
-                  <CardTitle className="text-lg font-semibold text-white">{item.question}</CardTitle>
+                  <CardTitle className="text-lg font-semibold text-foreground">{item.question}</CardTitle>
                 </CardHeader>
                 <CardContent className="px-6 pb-6 text-sm leading-7 text-muted-foreground">
                   {item.answer}
