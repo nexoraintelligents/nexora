@@ -14,6 +14,11 @@ export async function fetchApi<T>(endpoint: string, options: RequestInit = {}): 
     headers.set("Content-Type", "application/json");
   }
 
+  const token = localStorage.getItem("token");
+  if (token) {
+    headers.set("Authorization", `Bearer ${token}`);
+  }
+
   const BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
   const url = endpoint.startsWith("/api") 
     ? `${BASE_URL}${endpoint}` 

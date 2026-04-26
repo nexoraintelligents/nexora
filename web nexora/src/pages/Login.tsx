@@ -51,7 +51,7 @@ export default function Login() {
       
       // If we got a token immediately (unlikely with our current backend setup but good for compatibility)
       if (data.token) {
-        login(data.user);
+        login(data.user, data.token);
         navigate("/");
         return;
       }
@@ -86,7 +86,7 @@ export default function Login() {
         body: JSON.stringify({ email, otp }),
       });
       
-      login(data.user);
+      login(data.user, data.token);
       navigate("/");
     } catch (err: any) {
       setErrors({ general: err.message || "Invalid OTP" });

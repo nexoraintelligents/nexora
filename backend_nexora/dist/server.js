@@ -10,6 +10,7 @@ const mongoose_1 = require("./lib/mongoose");
 const auth_routes_1 = __importDefault(require("./modules/auth/auth.routes"));
 const auth_1 = require("./middleware/auth");
 const express_rate_limit_1 = __importDefault(require("express-rate-limit"));
+const payment_routes_1 = __importDefault(require("./modules/payment/payment.routes"));
 const app = (0, express_1.default)();
 const port = process.env.PORT || 4001;
 // Rate limiting
@@ -37,6 +38,7 @@ async function startServer() {
         });
         // Routes
         app.use('/api/v1/auth', authLimiter, auth_routes_1.default);
+        app.use('/api/v1/payments', payment_routes_1.default);
         // Example firebase protected route
         app.get('/api/protected-firebase', firebaseGuard_1.firebaseGuard, (req, res) => {
             res.json({ message: 'This is a firebase protected route' });

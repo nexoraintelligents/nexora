@@ -5,6 +5,7 @@ import { connectDB } from './lib/mongoose';
 import authRoutes from './modules/auth/auth.routes';
 import { authGuard } from './middleware/auth';
 import rateLimit from 'express-rate-limit';
+import paymentRoutes from './modules/payment/payment.routes';
 
 const app = express();
 const port = process.env.PORT || 4001;
@@ -38,6 +39,7 @@ async function startServer() {
 
     // Routes
     app.use('/api/v1/auth', authLimiter, authRoutes);
+    app.use('/api/v1/payments', paymentRoutes);
 
     // Example firebase protected route
     app.get('/api/protected-firebase', firebaseGuard, (req, res) => {
