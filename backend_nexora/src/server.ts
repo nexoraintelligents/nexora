@@ -27,8 +27,8 @@ app.use(express.json());
 // Routes
 app.use('/api/v1/auth', authLimiter, authRoutes);
 
-app.get('/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+app.get('/health', (_, res) => {
+  res.status(200).send('OK');
 });
 
 // Example firebase protected route
@@ -42,5 +42,5 @@ app.get('/api/protected', authGuard, (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
+  console.log(`Server running on ${port}`);
 });
