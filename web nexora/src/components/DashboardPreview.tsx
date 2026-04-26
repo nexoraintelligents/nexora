@@ -24,7 +24,7 @@ const barData = [
 
 export function DashboardPreview() {
   return (
-    <section id="dashboard" className="py-24 bg-gradient-to-b from-black/0 via-purple-900/10 to-black/0">
+    <section id="dashboard" className="py-24 bg-gradient-to-b from-white/0 via-purple-500/5 to-white/0 dark:from-black/0 dark:via-purple-900/10 dark:to-black/0">
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-5xl font-bold mb-4">Command Center <span className="gradient-text">Intelligence</span></h2>
@@ -34,6 +34,7 @@ export function DashboardPreview() {
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
           viewport={{ once: true }}
           className="max-w-6xl mx-auto p-4 md:p-8 rounded-3xl glass border-white/5 shadow-2xl"
         >
@@ -81,7 +82,7 @@ export function DashboardPreview() {
                       contentStyle={{ backgroundColor: "#000", border: "1px solid #ffffff10", borderRadius: "8px", fontSize: "12px" }}
                       itemStyle={{ color: "#fff" }}
                     />
-                    <Area type="monotone" dataKey="value" stroke="#8b5cf6" fillOpacity={1} fill="url(#colorValue)" strokeWidth={2} />
+                    <Area type="monotone" dataKey="value" stroke="#8b5cf6" fillOpacity={1} fill="url(#colorValue)" strokeWidth={2} isAnimationActive={false} />
                   </AreaChart>
                 </ResponsiveContainer>
               </CardContent>
@@ -95,7 +96,7 @@ export function DashboardPreview() {
                 <CardContent className="h-[150px]">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={barData}>
-                      <Bar dataKey="value" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+                      <Bar dataKey="value" fill="#3b82f6" radius={[4, 4, 0, 0]} isAnimationActive={false} />
                     </BarChart>
                   </ResponsiveContainer>
                 </CardContent>

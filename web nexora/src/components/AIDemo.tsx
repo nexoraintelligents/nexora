@@ -21,7 +21,7 @@ export function AIDemo() {
   };
 
   return (
-    <section id="demo" className="py-24 bg-black/50">
+    <section id="demo" className="py-24 bg-white/50 dark:bg-black/50">
       <div className="container mx-auto px-6">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">

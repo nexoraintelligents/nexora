@@ -21,10 +21,10 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0f172a] px-4">
-      <div className="max-w-md w-full space-y-8 p-8 bg-[#1e293b] rounded-2xl shadow-2xl border border-white/10">
+    <div className="min-h-screen flex items-center justify-center bg-background px-4">
+      <div className="max-w-md w-full space-y-8 p-8 glass dark:bg-[#1e293b] bg-white/50 rounded-2xl shadow-2xl border border-white/10">
         <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-white">
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-foreground">
             Forgot Password
           </h2>
           <p className="mt-2 text-center text-sm text-gray-400">

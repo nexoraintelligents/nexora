@@ -48,25 +48,46 @@
 }
 
 :root {
-    --background: oklch(0.05 0 0);
-    --foreground: oklch(0.985 0 0);
-    --card: oklch(0.1 0 0);
-    --card-foreground: oklch(0.985 0 0);
-    --popover: oklch(0.1 0 0);
-    --popover-foreground: oklch(0.985 0 0);
+    --background: #ffffff; /* pure white */
+    --foreground: #000000; /* pure black */
+    --card: #ffffff;
+    --card-foreground: #000000;
+    --popover: #ffffff;
+    --popover-foreground: #000000;
     --primary: oklch(0.6 0.2 280); /* Purple */
-    --primary-foreground: oklch(0.985 0 0);
-    --secondary: oklch(0.2 0 0);
-    --secondary-foreground: oklch(0.985 0 0);
-    --muted: oklch(0.2 0 0);
-    --muted-foreground: oklch(0.7 0 0);
+    --primary-foreground: #ffffff;
+    --secondary: oklch(0.961 0 0);
+    --secondary-foreground: #000000;
+    --muted: oklch(0.961 0 0);
+    --muted-foreground: #333333;
+    --accent: oklch(0.961 0 0);
+    --accent-foreground: #000000;
+    --destructive: oklch(0.577 0.245 27.325);
+    --border: oklch(0 0 0 / 10%);
+    --input: oklch(0 0 0 / 15%);
+    --ring: oklch(0.6 0.2 280);
+    --radius: 0.75rem;
+}
+
+.dark {
+    --background: #000000; /* pure black */
+    --foreground: #ffffff; /* pure white */
+    --card: #0a0a0a;
+    --card-foreground: #ffffff;
+    --popover: #0a0a0a;
+    --popover-foreground: #ffffff;
+    --primary: oklch(0.6 0.2 280); /* Purple */
+    --primary-foreground: #ffffff;
+    --secondary: #1a1a1a;
+    --secondary-foreground: #ffffff;
+    --muted: #1a1a1a;
+    --muted-foreground: #a3a3a3;
     --accent: oklch(0.6 0.2 200); /* Blue */
-    --accent-foreground: oklch(0.985 0 0);
+    --accent-foreground: #ffffff;
     --destructive: oklch(0.577 0.245 27.325);
     --border: oklch(1 0 0 / 10%);
     --input: oklch(1 0 0 / 15%);
     --ring: oklch(0.6 0.2 280);
-    --radius: 0.75rem;
 }
 
 @layer base {
@@ -75,24 +96,84 @@
     }
   body {
     @apply bg-background text-foreground antialiased;
-    background-image: 
-      radial-gradient(at 0% 0%, rgba(139, 92, 246, 0.15) 0px, transparent 50%),
-      radial-gradient(at 100% 100%, rgba(59, 130, 246, 0.15) 0px, transparent 50%);
     }
 }
 
+:root:not(.dark) body {
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(139, 92, 246, 0.03) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(59, 130, 246, 0.03) 0px, transparent 50%);
+}
+
+.dark body {
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(139, 92, 246, 0.15) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(59, 130, 246, 0.15) 0px, transparent 50%);
+}
+
+/* Light mode overrides for utility classes heavily used in the project */
+:root:not(.dark) .text-white {
+  color: #000000 !important;
+}
+
+:root:not(.dark) .text-slate-400,
+:root:not(.dark) .text-gray-400,
+:root:not(.dark) .text-slate-500,
+:root:not(.dark) .text-gray-500 {
+  color: #000000 !important;
+}
+
+:root:not(.dark) .placeholder\:text-slate-500::placeholder,
+:root:not(.dark) .placeholder\:text-gray-500::placeholder {
+  color: rgba(0, 0, 0, 0.5) !important;
+}
+
+:root:not(.dark) .bg-white\/5 {
+  background-color: rgba(0, 0, 0, 0.05) !important;
+}
+
+:root:not(.dark) .bg-white\/10 {
+  background-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+:root:not(.dark) .border-white\/10 {
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+:root:not(.dark) .border-white\/20 {
+  border-color: rgba(0, 0, 0, 0.2) !important;
+}
+
+:root:not(.dark) .text-white\/80 {
+  color: rgba(0, 0, 0, 0.8) !important;
+}
+
+:root:not(.dark) .text-white\/60 {
+  color: rgba(0, 0, 0, 0.6) !important;
+}
+
+/* Ensure buttons and elements with explicit primary colors retain white text */
+:root:not(.dark) button.bg-blue-600 .text-white,
+:root:not(.dark) button.bg-purple-600 .text-white,
+:root:not(.dark) button.bg-gradient-to-r .text-white,
+:root:not(.dark) .bg-blue-600.text-white,
+:root:not(.dark) .bg-gradient-to-r.text-white,
+:root:not(.dark) .bg-gradient-to-br.text-white {
+  color: white !important;
+}
+
 .glass {
-  @apply bg-white/5 backdrop-blur-xl border border-white/10;
+  @apply bg-black/5 dark:bg-white/5 backdrop-blur-xl border border-black/10 dark:border-white/10;
 }
 
 .neon-purple {
-  @apply text-purple-400 drop-shadow-[0_0_8px_rgba(167,139,250,0.5)];
+  @apply text-purple-600 dark:text-purple-400 drop-shadow-[0_0_8px_rgba(167,139,250,0.5)];
 }
 
 .neon-blue {
-  @apply text-blue-400 drop-shadow-[0_0_8px_rgba(96,165,250,0.5)];
+  @apply text-blue-600 dark:text-blue-400 drop-shadow-[0_0_8px_rgba(96,165,250,0.5)];
 }
 
 .gradient-text {
-  @apply bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-400;
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-600 dark:from-purple-400 dark:to-blue-400;
 }

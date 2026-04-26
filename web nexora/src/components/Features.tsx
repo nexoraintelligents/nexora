@@ -38,7 +38,7 @@ export function Features() {
   const words = headingText.split(" ");
 
   return (
-    <section id="features" className="relative pt-32 pb-40 z-0" style={{ background: "linear-gradient(to bottom, #04070f, #060d1a)" }}>
+    <section id="features" className="relative pt-32 pb-40 z-0 dark:bg-[#060d1a]">
       {/* Absolute Dual Ambient Light Leaks */}
       <div className="absolute top-0 inset-x-0 h-[500px] bg-indigo-900/10 blur-[120px] rounded-full pointer-events-none -z-10" />
       <div className="absolute bottom-0 inset-x-0 h-[400px] bg-sky-900/10 blur-[120px] rounded-full pointer-events-none -z-10" />
@@ -70,9 +70,9 @@ export function Features() {
           
           {/* Left Hero Heading */}
           <div className="flex-1 max-w-2xl">
-            <div className="mb-6 inline-flex items-center gap-2 px-3 py-1.5 rounded bg-white/5 border border-[rgba(255,255,255,0.07)] box-shadow-[0_0_15px_rgba(255,255,255,0.1)] w-fit">
-               <span className="w-1.5 h-1.5 rounded-full bg-sky-400 drop-shadow-[0_0_8px_rgba(56,189,248,0.9)] animate-pulse" />
-               <span style={{ fontFamily: "'DM Mono', monospace" }} className="text-xs tracking-widest text-[rgba(255,255,255,0.92)] uppercase">
+            <div className="mb-6 inline-flex items-center gap-2 px-3 py-1.5 rounded glass border border-black/10 dark:border-[rgba(255,255,255,0.07)] box-shadow-[0_0_15px_rgba(0,0,0,0.1)] dark:box-shadow-[0_0_15px_rgba(255,255,255,0.1)] w-fit">
+               <span className="w-1.5 h-1.5 rounded-full bg-sky-500 drop-shadow-[0_0_8px_rgba(56,189,248,0.9)] animate-pulse" />
+               <span style={{ fontFamily: "'DM Mono', monospace" }} className="text-xs tracking-widest text-foreground/80 dark:text-[rgba(255,255,255,0.92)] uppercase">
                  Systems Online
                </span>
             </div>
@@ -86,8 +86,8 @@ export function Features() {
                      initial={{ opacity: 0, y: 30 }}
                      whileInView={{ opacity: 1, y: 0 }}
                      viewport={{ once: true, margin: "-100px" }}
-                     transition={{ duration: 0.6, delay: i * 0.07, ease: [0.16, 1, 0.3, 1] }}
-                     className={isAccent ? "bg-clip-text text-transparent bg-gradient-to-r from-[#38bdf8] via-[#818cf8] to-[#c084fc]" : "text-[rgba(255,255,255,0.92)]"}
+                     transition={{ duration: 0.3, delay: i * 0.05, ease: [0.16, 1, 0.3, 1] }}
+                     className={isAccent ? "bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 dark:from-[#38bdf8] dark:via-[#818cf8] dark:to-[#c084fc]" : "text-foreground dark:text-[rgba(255,255,255,0.92)]"}
                    >
                      {word}
                    </motion.span>
@@ -129,32 +129,32 @@ export function Features() {
         </div>
 
         {/* Bottom Strip Glassmorphic Demographics */}
-        <motion.div 
+         <motion.div 
            initial={{ opacity: 0, y: 30 }}
            whileInView={{ opacity: 1, y: 0 }}
            viewport={{ once: true, margin: "-50px" }}
-           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-           className="grid grid-cols-2 md:grid-cols-4 border border-[rgba(255,255,255,0.07)] rounded-[20px] bg-[rgba(14,22,45,0.4)] backdrop-blur-md overflow-hidden"
+           transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+           className="grid grid-cols-2 md:grid-cols-4 border border-black/10 dark:border-[rgba(255,255,255,0.07)] rounded-[20px] bg-white/40 dark:bg-[rgba(14,22,45,0.4)] backdrop-blur-md overflow-hidden"
         >
            {/* Internal hairlines separated structurally via border widths */}
-           <div className="p-8 md:p-10 border-b md:border-b-0 md:border-r border-[rgba(255,255,255,0.07)] text-center flex flex-col items-center justify-center">
-              <div style={{ fontFamily: "'DM Mono', monospace" }} className="text-3xl md:text-4xl text-[rgba(255,255,255,0.92)] mb-2 font-medium tracking-tight">98.9%</div>
-              <div style={{ fontFamily: "'DM Sans', sans-serif" }} className="text-xs text-[rgba(148,163,184,0.8)] uppercase tracking-widest font-semibold">Model Accuracy</div>
+           <div className="p-8 md:p-10 border-b md:border-b-0 md:border-r border-black/10 dark:border-[rgba(255,255,255,0.07)] text-center flex flex-col items-center justify-center">
+              <div style={{ fontFamily: "'DM Mono', monospace" }} className="text-3xl md:text-4xl text-foreground dark:text-[rgba(255,255,255,0.92)] mb-2 font-medium tracking-tight">98.9%</div>
+              <div style={{ fontFamily: "'DM Sans', sans-serif" }} className="text-xs text-muted-foreground uppercase tracking-widest font-semibold">Model Accuracy</div>
            </div>
            
-           <div className="p-8 md:p-10 border-b md:border-b-0 md:border-r border-[rgba(255,255,255,0.07)] text-center flex flex-col items-center justify-center">
-              <div style={{ fontFamily: "'DM Mono', monospace" }} className="text-3xl md:text-4xl text-[rgba(255,255,255,0.92)] mb-2 font-medium tracking-tight">10B+</div>
-              <div style={{ fontFamily: "'DM Sans', sans-serif" }} className="text-xs text-[rgba(148,163,184,0.8)] uppercase tracking-widest font-semibold">Events Processed</div>
+           <div className="p-8 md:p-10 border-b md:border-b-0 md:border-r border-black/10 dark:border-[rgba(255,255,255,0.07)] text-center flex flex-col items-center justify-center">
+              <div style={{ fontFamily: "'DM Mono', monospace" }} className="text-3xl md:text-4xl text-foreground dark:text-[rgba(255,255,255,0.92)] mb-2 font-medium tracking-tight">10B+</div>
+              <div style={{ fontFamily: "'DM Sans', sans-serif" }} className="text-xs text-muted-foreground uppercase tracking-widest font-semibold">Events Processed</div>
            </div>
            
-           <div className="p-8 md:p-10 border-r md:border-b-0 border-[rgba(255,255,255,0.07)] text-center flex flex-col items-center justify-center">
-              <div style={{ fontFamily: "'DM Mono', monospace" }} className="text-3xl md:text-4xl text-[rgba(255,255,255,0.92)] mb-2 font-medium tracking-tight">&lt;8ms</div>
-              <div style={{ fontFamily: "'DM Sans', sans-serif" }} className="text-xs text-[rgba(148,163,184,0.8)] uppercase tracking-widest font-semibold">Latency p99</div>
+           <div className="p-8 md:p-10 border-r md:border-b-0 border-black/10 dark:border-[rgba(255,255,255,0.07)] text-center flex flex-col items-center justify-center">
+              <div style={{ fontFamily: "'DM Mono', monospace" }} className="text-3xl md:text-4xl text-foreground dark:text-[rgba(255,255,255,0.92)] mb-2 font-medium tracking-tight">&lt;8ms</div>
+              <div style={{ fontFamily: "'DM Sans', sans-serif" }} className="text-xs text-muted-foreground uppercase tracking-widest font-semibold">Latency p99</div>
            </div>
            
            <div className="p-8 md:p-10 text-center flex flex-col items-center justify-center">
-              <div style={{ fontFamily: "'DM Mono', monospace" }} className="text-3xl md:text-4xl text-[rgba(255,255,255,0.92)] mb-2 font-medium tracking-tight overflow-hidden">SOC2</div>
-              <div style={{ fontFamily: "'DM Sans', sans-serif" }} className="text-xs text-[rgba(148,163,184,0.8)] uppercase tracking-widest font-semibold flex items-center justify-center gap-2">
+              <div style={{ fontFamily: "'DM Mono', monospace" }} className="text-3xl md:text-4xl text-foreground dark:text-[rgba(255,255,255,0.92)] mb-2 font-medium tracking-tight overflow-hidden">SOC2</div>
+              <div style={{ fontFamily: "'DM Sans', sans-serif" }} className="text-xs text-muted-foreground uppercase tracking-widest font-semibold flex items-center justify-center gap-2">
                  <span className="w-2 h-2 rounded-full bg-emerald-400" />
                  Certified
               </div>
